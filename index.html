@@ -47,15 +47,37 @@
     /* TOP BAR */
     #topbar {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(13,17,23,.95);
+      background: rgba(13,17,23,.97);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
-      padding: 10px 24px;
-      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      display: flex; align-items: stretch;
+      height: 44px; padding: 0;
     }
-    .logo {
-      color: var(--c-main); font-weight: 700; font-size: 13px;
-      margin-right: 8px; white-space: nowrap; letter-spacing: -.02em;
+    .tb-left {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 18px;
+      border-right: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .tb-dots { display: flex; gap: 6px; }
+    .tb-dot  { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .tb-name { font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .tb-name .tb-user { color: var(--c-main); font-weight: 700; }
+    .tb-name .tb-sep  { color: var(--border); margin: 0 2px; }
+    .tb-name .tb-repo { color: var(--text); }
+    .tb-center {
+      display: flex; align-items: center;
+      padding: 0 16px;
+      border-right: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .tb-filter-label {
+      font-size: 10px; color: var(--muted);
+      white-space: nowrap; letter-spacing: .06em; text-transform: uppercase;
+    }
+    .tb-right {
+      display: flex; align-items: center; gap: 5px;
+      padding: 0 14px; flex-wrap: wrap; overflow: hidden;
     }
     .branch-pill {
       display: inline-flex; align-items: center; gap: 5px;
@@ -78,36 +100,52 @@
       padding: 0 20px 120px;
     }
 
-    /* README */
-    #readme-section {
+    /* TERMINAL */
+    #terminal-section {
       grid-column: 1 / -1;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 8px; overflow: hidden; margin: 20px 0 28px;
+      background: #010409;
+      border: 1px solid var(--border);
+      border-radius: 8px; overflow: hidden;
+      margin: 20px 0 28px;
     }
-    #readme-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 9px 16px; background: var(--surface2);
+    .term-titlebar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 14px; background: var(--surface2);
       border-bottom: 1px solid var(--border);
-      cursor: pointer; user-select: none;
     }
-    .rh-left { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
-    .toggle-chevron { color: var(--muted); font-size: 10px; transition: transform .25s; }
-    #readme-header.collapsed .toggle-chevron { transform: rotate(-90deg); }
-    #readme-body { padding: 24px 28px; }
-    #readme-body.hidden { display: none; }
-
-    .rm-title  { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-    .rm-title span { color: var(--c-main); }
-    .rm-sub    { color: var(--muted); font-size: 12px; margin-bottom: 18px; }
-    .rm-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-    .rm-badge  { padding: 3px 11px; border-radius: 5px; font-size: 11px; font-weight: 600; border: 1px solid; }
-    .rm-text   { font-size: 13px; color: #c9d1d9; line-height: 1.9; }
-    .rm-text p { margin-bottom: 10px; }
-    .rm-text strong { color: var(--c-main); font-weight: 600; }
-    .rm-text code {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 4px; padding: 2px 8px; font-size: 11px; color: var(--c-personal);
+    .term-dots { display: flex; gap: 6px; }
+    .term-dot  { width: 11px; height: 11px; border-radius: 50%; }
+    .term-title-name { flex: 1; text-align: center; font-size: 11px; color: var(--muted); }
+    #term-body {
+      padding: 14px 20px 2px;
+      max-height: 300px; min-height: 100px;
+      overflow-y: auto;
     }
+    .tl { display: flex; line-height: 1.65; font-size: 12px; margin-bottom: 0; }
+    .tl-prompt { color: var(--c-main); white-space: nowrap; user-select: none; margin-right: 8px; flex-shrink: 0; }
+    .tl-cmd    { color: var(--text); }
+    .tl-out    { display: block; font-size: 12px; line-height: 1.75; color: #c9d1d9;
+                 padding: 2px 0 10px 0; white-space: pre; }
+    .tl-out .ok  { color: var(--c-personal); }
+    .tl-out .err { color: var(--c-dans); }
+    .tl-out .dim { color: var(--muted); }
+    .tl-out .hi  { color: var(--c-main); font-weight: 600; }
+    .tl-out .bl  { color: var(--c-education); }
+    .tl-out .rd  { color: var(--c-dans); }
+    .tl-out .gr  { color: var(--c-personal); }
+    .tl-out .pu  { color: var(--c-international); }
+    .tl-out .or  { color: var(--c-work); }
+    #term-input-row {
+      display: flex; align-items: center;
+      padding: 2px 20px 12px;
+    }
+    .ti-prompt { color: var(--c-main); white-space: nowrap; margin-right: 8px; font-size: 12px; user-select: none; }
+    #term-input {
+      flex: 1; background: transparent; border: none; outline: none;
+      font-family: var(--font); font-size: 12px; color: var(--text);
+      caret-color: var(--c-main);
+    }
+    #term-input::placeholder { color: var(--border); }
 
     /* GRAPH AREA */
     #graph-area {
@@ -270,10 +308,14 @@
       #scrubber { display: none; }
       #detail-panel { width: 100%; right: -100%; }
       .cr-branch-pill { display: none; }
+      .tb-center { display: none; }
+      #term-body { max-height: 200px; }
     }
     @media (max-width: 500px) {
       :root { --graph-w: 56px; --lane-w: 10px; }
-      #topbar { padding: 8px 12px; gap: 6px; }
+      #topbar { padding: 0; }
+      .tb-left { padding: 0 12px; gap: 8px; }
+      .tb-right { gap: 4px; padding: 0 8px; }
       .branch-pill { font-size: 9px; padding: 2px 8px 2px 6px; }
     }
   </style>
@@ -281,36 +323,41 @@
 <body>
 
 <nav id="topbar">
-  <div class="logo">&#11043; wouter@portfolio:~$</div>
-  <button class="branch-pill active" data-branch="education"><span class="pill-dot" style="background:#4f9ef8"></span><span style="color:#4f9ef8">education</span></button>
-  <button class="branch-pill active" data-branch="dans"><span class="pill-dot" style="background:#e05c5c"></span><span style="color:#e05c5c">dans</span></button>
-  <button class="branch-pill active" data-branch="personal-growth"><span class="pill-dot" style="background:#56d364"></span><span style="color:#56d364">personal-growth</span></button>
-  <button class="branch-pill active" data-branch="international"><span class="pill-dot" style="background:#bc8cff"></span><span style="color:#bc8cff">international</span></button>
-  <button class="branch-pill active" data-branch="work"><span class="pill-dot" style="background:#f0883e"></span><span style="color:#f0883e">work</span></button>
+  <div class="tb-left">
+    <div class="tb-dots">
+      <span class="tb-dot" style="background:#ff5f57"></span>
+      <span class="tb-dot" style="background:#ffbd2e"></span>
+      <span class="tb-dot" style="background:#28c840"></span>
+    </div>
+    <div class="tb-name"><span class="tb-user">wouter-jacobs</span><span class="tb-sep">/</span><span class="tb-repo">portfolio</span></div>
+  </div>
+  <div class="tb-center">
+    <span class="tb-filter-label">git branch</span>
+  </div>
+  <div class="tb-right">
+    <button class="branch-pill active" data-branch="education"><span class="pill-dot" style="background:#4f9ef8"></span><span style="color:#4f9ef8">education</span></button>
+    <button class="branch-pill active" data-branch="dans"><span class="pill-dot" style="background:#e05c5c"></span><span style="color:#e05c5c">dans</span></button>
+    <button class="branch-pill active" data-branch="personal-growth"><span class="pill-dot" style="background:#56d364"></span><span style="color:#56d364">personal-growth</span></button>
+    <button class="branch-pill active" data-branch="international"><span class="pill-dot" style="background:#bc8cff"></span><span style="color:#bc8cff">international</span></button>
+    <button class="branch-pill active" data-branch="work"><span class="pill-dot" style="background:#f0883e"></span><span style="color:#f0883e">work</span></button>
+  </div>
 </nav>
 
 <div id="page">
 
-  <section id="readme-section">
-    <div id="readme-header">
-      <div class="rh-left"><span>&#128196;</span><span>README.md</span></div>
-      <span class="toggle-chevron">&#9660;</span>
+  <section id="terminal-section">
+    <div class="term-titlebar">
+      <div class="term-dots">
+        <span class="term-dot" style="background:#ff5f57"></span>
+        <span class="term-dot" style="background:#ffbd2e"></span>
+        <span class="term-dot" style="background:#28c840"></span>
+      </div>
+      <div class="term-title-name">bash &#x2014; wouter@portfolio:~</div>
     </div>
-    <div id="readme-body">
-      <div class="rm-title"><span>#</span> Wouter Jacobs</div>
-      <div class="rm-sub">Application Development &amp; Systems &middot; PXL Hasselt &middot; Graduating 2026</div>
-      <div class="rm-badges">
-        <span class="rm-badge" style="color:#f0c040;border-color:#f0c040;background:rgba(240,192,64,.08)">&#127942; Meervoudig Belgisch Kampioen</span>
-        <span class="rm-badge" style="color:#4f9ef8;border-color:#4f9ef8;background:rgba(79,158,248,.08)">&#127891; PXL Digital AON</span>
-        <span class="rm-badge" style="color:#56d364;border-color:#56d364;background:rgba(86,211,100,.08)">&#128378; VTS Initiator Dans</span>
-        <span class="rm-badge" style="color:#bc8cff;border-color:#bc8cff;background:rgba(188,140,255,.08)">&#127758; Internationaal</span>
-      </div>
-      <div class="rm-text">
-        <p>Welkom op mijn interactief Git-portfolio. Dit is geen gewone CV &mdash; het is een <strong>volledige Git-geschiedenis van mijn leven</strong>, gevisualiseerd als een branching commit graph.</p>
-        <p>Ik ben Wouter Jacobs, een gepassioneerde software developer en competitief koppeldanser uit Belgi&euml;. Mijn pad was niet lineair &mdash; mislukkingen, omwegen en onverwachte avonturen maakten me wie ik ben. Elke commit hieronder vertelt een stuk van dat verhaal.</p>
-        <p><strong>Klik op een commit node</strong> om de volledige beschrijving te lezen. Gebruik de <strong>branch-filters</strong> bovenaan om specifieke domeinen te bekijken.</p>
-        <p><code>git log --graph --oneline --all --decorate -- wouter-jacobs</code></p>
-      </div>
+    <div id="term-body"></div>
+    <div id="term-input-row">
+      <span class="ti-prompt">wouter@portfolio:~$</span>
+      <input id="term-input" type="text" autocomplete="off" spellcheck="false" placeholder="typ een commando en druk Enter..." />
     </div>
   </section>
 
@@ -801,11 +848,130 @@ function posTooltip(e) {
   tooltip.style.top  = Math.min(e.clientY + 18, window.innerHeight - 80)  + "px";
 }
 
-// ── README TOGGLE ──
-document.getElementById("readme-header").addEventListener("click", function() {
-  document.getElementById("readme-body").classList.toggle("hidden");
-  document.getElementById("readme-header").classList.toggle("collapsed");
-});
+// ── TERMINAL ──
+(function() {
+  const body   = document.getElementById("term-body");
+  const input  = document.getElementById("term-input");
+  const termEl = document.getElementById("terminal-section");
+  const PROMPT = "wouter@portfolio:~$";
+  let cmdHistory = [], histIdx = -1;
+
+  function esc(s) {
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  function appendCmd(cmd, outputHtml) {
+    const row = document.createElement("div");
+    row.className = "tl";
+    row.innerHTML = '<span class="tl-prompt">' + PROMPT + '</span><span class="tl-cmd">&nbsp;' + esc(cmd) + '</span>';
+    body.appendChild(row);
+    if (outputHtml != null) {
+      const out = document.createElement("div");
+      out.className = "tl-out";
+      out.innerHTML = outputHtml;
+      body.appendChild(out);
+    }
+    body.scrollTop = body.scrollHeight;
+  }
+
+  const CMDS = {
+    "whoami": function() {
+      return '<span class="hi">Wouter Jacobs</span>\n'
+           + '<span class="dim">Application Development &amp; Systems &middot; PXL Hasselt &middot; Graduating 2026</span>\n'
+           + '<span class="dim">Competitief koppeldanser &middot; Software developer &middot; Avonturier</span>';
+    },
+    "help": function() {
+      return '<span class="dim">Beschikbare commando\'s:</span>\n'
+           + '  <span class="hi">git log</span>          <span class="dim">&rarr; scroll naar commit graph</span>\n'
+           + '  <span class="hi">git branch</span>       <span class="dim">&rarr; toon alle branches</span>\n'
+           + '  <span class="hi">git status</span>       <span class="dim">&rarr; huidige status</span>\n'
+           + '  <span class="hi">cat README.md</span>    <span class="dim">&rarr; toon README</span>\n'
+           + '  <span class="hi">whoami</span>           <span class="dim">&rarr; wie ben ik?</span>\n'
+           + '  <span class="hi">ls</span>               <span class="dim">&rarr; bestanden in directory</span>\n'
+           + '  <span class="hi">clear</span>            <span class="dim">&rarr; terminal wissen</span>';
+    },
+    "git branch": function() {
+      return '  <span class="rd">dans</span>\n'
+           + '<span class="hi">* education</span>\n'
+           + '  <span class="pu">international</span>\n'
+           + '  <span class="gr">personal-growth</span>\n'
+           + '  <span class="or">work</span>';
+    },
+    "git branch -a": function() {
+      return CMDS["git branch"]() + '\n'
+           + '<span class="dim">  remotes/origin/education</span>\n'
+           + '<span class="dim">  remotes/origin/HEAD -&gt; origin/education</span>';
+    },
+    "git status": function() {
+      return '<span class="hi">Op branch education</span>\n'
+           + '<span class="ok">Afstuderen bijna voltooid.</span>\n'
+           + '\nChanges not staged for commit:\n'
+           + '  <span class="ok">modified:   skills/typescript.ts</span>\n'
+           + '  <span class="ok">modified:   skills/dotnet.cs</span>\n'
+           + '  <span class="ok">new file:   life/afstuderen.md</span>\n'
+           + '\n<span class="dim">geen bestanden gestaged voor commit</span>';
+    },
+    "ls": function() {
+      return '<span class="bl">dans/</span>  <span class="bl">education/</span>  <span class="bl">international/</span>  <span class="bl">personal-growth/</span>  <span class="bl">work/</span>\nREADME.md  portfolio.html  .gitconfig';
+    },
+    "cat README.md": function() {
+      return '<span class="hi"># Wouter Jacobs</span>\n'
+           + '<span class="dim">Application Development &amp; Systems &middot; PXL Hasselt &middot; Graduating 2026</span>\n\n'
+           + 'Welkom op mijn interactief Git-portfolio.\n'
+           + 'Dit is geen gewone CV &mdash; het is een <span class="hi">volledige Git-geschiedenis van mijn leven</span>,\n'
+           + 'gevisualiseerd als een branching commit graph.\n\n'
+           + 'Ik ben Wouter Jacobs, een gepassioneerde software developer en\n'
+           + 'competitief koppeldanser uit Belgi&euml;. Mijn pad was niet lineair &mdash;\n'
+           + 'mislukkingen, omwegen en onverwachte avonturen maakten me wie ik ben.\n\n'
+           + '<span class="dim"># Klik op een commit node om meer te lezen.</span>\n'
+           + '<span class="dim"># Gebruik de branch-filters bovenaan om te filteren.</span>';
+    },
+  };
+
+  function run(cmd) {
+    const t = cmd.trim();
+    if (!t) return;
+    cmdHistory.unshift(t);
+    histIdx = -1;
+
+    if (t === "clear") { body.innerHTML = ""; return; }
+
+    if (/^git\s+log/.test(t)) {
+      appendCmd(t, '<span class="ok">&rarr; Rendering commit graph...</span>');
+      setTimeout(function() {
+        document.getElementById("graph-area").scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 350);
+      return;
+    }
+
+    const handler = CMDS[t];
+    if (handler) { appendCmd(t, handler()); return; }
+
+    appendCmd(t, '<span class="err">bash: ' + esc(t.split(" ")[0]) + ': command not found</span>\n'
+                 + '<span class="dim">Probeer <span class="hi">help</span> voor beschikbare commando\'s.</span>');
+  }
+
+  input.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+      const cmd = input.value; input.value = ""; run(cmd);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (histIdx < cmdHistory.length - 1) input.value = cmdHistory[++histIdx];
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      histIdx > 0 ? input.value = cmdHistory[--histIdx] : (histIdx = -1, input.value = "");
+    }
+  });
+
+  termEl.addEventListener("click", function() { input.focus(); });
+
+  // Boot: auto-run cat README.md, then git log
+  appendCmd("cat README.md", CMDS["cat README.md"]());
+  setTimeout(function() {
+    appendCmd("git log --graph --oneline --all --decorate -- wouter-jacobs",
+      '<span class="ok">&rarr; Rendering commit graph below...</span>');
+  }, 300);
+})();
 
 // ── SCROLL ──
 window.addEventListener("scroll", updateScrubber, { passive: true });
