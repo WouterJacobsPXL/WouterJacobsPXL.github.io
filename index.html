@@ -392,6 +392,15 @@ const BRANCHES = {
   "work":           { color: "#f0883e", lane: 4 },
 };
 
+// Merge arrows: the LAST commit on each side branch curves into education's final commit.
+// This visually shows that all life paths converge into "who I am now".
+const merges = [
+  { from: "n4k6m3i", into: "w3t5v2r" },  // dans (last: Belgisch Kampioen) → afstuderen
+  { from: "p6m8o5k", into: "w3t5v2r" },  // personal-growth (last: Startup Coaching) → afstuderen
+  { from: "u1r3t0p", into: "w3t5v2r" },  // international (last: BusIT Week) → afstuderen
+  { from: "v2s4u1q", into: "w3t5v2r" },  // work (last: Hackathon) → afstuderen
+];
+
 // These must match :root CSS vars
 const LANE_W    = 22;
 const ROW_H     = 64;
@@ -529,6 +538,10 @@ function buildSVG() {
     }
   });
 
+  // -- Build hash->visIdx lookup for merge lines --
+  const visIdxByHash = {};
+  vis.forEach(function(c, vi) { visIdxByHash[c.hash] = vi; });
+
   // -- Draw bezier connectors between consecutive commits on same branch --
   // track last visIdx per branch
   const lastVisByBranch = {};
@@ -546,6 +559,58 @@ function buildSVG() {
       }));
     }
     lastVisByBranch[c.branch] = vi;
+  });
+
+  // -- Draw merge lines: CLI-style straight segments like git log --graph --
+  // Shape: vertical down → 45° diagonal → arrive at target node.
+  // The diagonal segment spans exactly |dx| pixels horizontally,
+  // so it slopes at 45° regardless of lane distance.
+  merges.forEach(function(m) {
+    const fromC = commits.find(function(c) { return c.hash === m.from; });
+    const intoC = commits.find(function(c) { return c.hash === m.into; });
+    if (!fromC || !intoC) return;
+    if (!activeBranches.has(fromC.branch) || !activeBranches.has(intoC.branch)) return;
+    if (visIdxByHash[m.from] == null || visIdxByHash[m.into] == null) return;
+
+    const fx = commitX(fromC.branch);
+    const fy = rowY(visIdxByHash[m.from]);
+    const tx = commitX(intoC.branch);
+    const ty = rowY(visIdxByHash[m.into]);
+    const color = branchColor(fromC.branch);
+
+    // The diagonal covers |fx - tx| horizontal distance at 45°, same vertical distance.
+    const dx = Math.abs(fx - tx);
+    // Diagonal starts at (fx, ty - dx) and ends at (tx, ty).
+    // Vertical segment: from (fx, fy) straight down to where diagonal begins.
+    const diagStartY = ty - dx;
+    // If the vertical segment has no room (nodes very close), skip straight to diagonal.
+    const d = (diagStartY > fy)
+      ? "M " + fx + " " + fy + " L " + fx + " " + diagStartY + " L " + tx + " " + ty
+      : "M " + fx + " " + fy + " L " + tx + " " + ty;
+
+    // Glow
+    svg.appendChild(svgEl("path", {
+      d: d, stroke: color, "stroke-width": "4", fill: "none", opacity: "0.07"
+    }));
+    // Main dashed line
+    svg.appendChild(svgEl("path", {
+      d: d, stroke: color, "stroke-width": "1.5", fill: "none",
+      opacity: "0.6", "stroke-dasharray": "4 3", "stroke-linejoin": "round"
+    }));
+    // Small arrowhead pointing into target along the diagonal direction
+    const aw = 4, ah = 7;
+    // Arrow direction: from diagStart toward (tx, ty)
+    const adx = tx - fx, ady = ty - diagStartY;
+    const len = Math.sqrt(adx * adx + ady * ady) || 1;
+    const ux = adx / len, uy = ady / len;  // unit vector along diagonal
+    const px = -uy, py = ux;               // perpendicular
+    const tip = [tx, ty - 1];
+    const b1  = [tx - ux * ah + px * aw, ty - 1 - uy * ah + py * aw];
+    const b2  = [tx - ux * ah - px * aw, ty - 1 - uy * ah - py * aw];
+    svg.appendChild(svgEl("polygon", {
+      points: tip[0]+","+tip[1]+" "+b1[0]+","+b1[1]+" "+b2[0]+","+b2[1],
+      fill: color, opacity: "0.75"
+    }));
   });
 
   // -- Draw nodes on top --
