@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
@@ -6,25 +6,27 @@
   <title>Wouter Jacobs — Git Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0d1117;
-      --surface: #161b22;
-      --border: #30363d;
-      --text: #e6edf3;
-      --muted: #8b949e;
-      --main:    #f0c040;
-      --dans:    #e05c5c;
-      --education: #4f9ef8;
-      --personal-growth: #56d364;
-      --international: #bc8cff;
-      --work:    #f0883e;
-      --font: 'JetBrains Mono', monospace;
-      --graph-left: 340px;
-      --node-size: 14px;
+      --bg:       #0d1117;
+      --surface:  #161b22;
+      --surface2: #1c2128;
+      --border:   #30363d;
+      --text:     #e6edf3;
+      --muted:    #8b949e;
+      --c-main:          #f0c040;
+      --c-education:     #4f9ef8;
+      --c-dans:          #e05c5c;
+      --c-personal:      #56d364;
+      --c-international: #bc8cff;
+      --c-work:          #f0883e;
+      --font: "JetBrains Mono", monospace;
+      --lane-w: 22px;
+      --row-h:  64px;
+      --graph-w: 160px;
     }
 
     html { scroll-behavior: smooth; }
@@ -38,1137 +40,714 @@
       overflow-x: hidden;
     }
 
-    /* ── TOP BAR ── */
-    #topbar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(13,17,23,.92);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    #topbar .logo {
-      color: var(--main);
-      font-weight: 700;
-      font-size: 14px;
-      margin-right: 12px;
-      white-space: nowrap;
-    }
-
-    .branch-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 10px;
-      border-radius: 999px;
-      border: 1px solid currentColor;
-      cursor: pointer;
-      font-size: 11px;
-      font-family: var(--font);
-      font-weight: 500;
-      transition: opacity .2s, background .2s;
-      opacity: 1;
-      background: transparent;
-      color: var(--muted);
-    }
-    .branch-pill .dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: currentColor;
-    }
-    .branch-pill.active { background: rgba(255,255,255,.06); }
-    .branch-pill.inactive { opacity: .35; }
-
-    /* ── README ── */
-    #readme-section {
-      max-width: 860px;
-      margin: 24px auto;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    #readme-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 16px;
-      background: var(--border);
-      cursor: pointer;
-      user-select: none;
-    }
-    #readme-header span { color: var(--muted); font-size: 12px; }
-    #readme-header .toggle-icon { color: var(--muted); transition: transform .3s; }
-    #readme-header.collapsed .toggle-icon { transform: rotate(-90deg); }
-    #readme-body { padding: 20px 24px; }
-    #readme-body.hidden { display: none; }
-
-    .readme-title { color: var(--main); font-size: 20px; font-weight: 700; margin-bottom: 6px; }
-    .readme-subtitle { color: var(--muted); font-size: 12px; margin-bottom: 16px; }
-    .readme-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-    .readme-badge {
-      padding: 2px 10px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      background: var(--border);
-      color: var(--text);
-    }
-    .readme-text { color: var(--text); line-height: 1.8; font-size: 13px; }
-    .readme-text p { margin-bottom: 10px; }
-    .readme-text strong { color: var(--main); }
-
-    /* ── MAIN LAYOUT ── */
-    #main-layout {
-      display: flex;
-      position: relative;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 16px 100px;
-    }
-
-    /* ── GRAPH AREA ── */
-    #graph-area {
-      flex: 1;
-      position: relative;
-      padding-right: 16px;
-    }
-
-    #graph-svg-container {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    #graph-svg {
-      width: 100%;
-      overflow: visible;
-    }
-
-    /* ── COMMIT LIST ── */
-    #commits-container {
-      position: relative;
-      z-index: 2;
-      padding-top: 8px;
-    }
-
-    .commit-row {
-      display: flex;
-      align-items: flex-start;
-      padding: 6px 0;
-      position: relative;
-      opacity: 0;
-      transform: translateX(-20px);
-      transition: opacity .4s ease, transform .4s ease;
-    }
-    .commit-row.visible { opacity: 1; transform: translateX(0); }
-    .commit-row.hidden-branch { display: none; }
-
-    .commit-graph-col {
-      width: 200px;
-      flex-shrink: 0;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding-right: 16px;
-    }
-
-    .commit-node {
-      width: var(--node-size);
-      height: var(--node-size);
-      border-radius: 50%;
-      flex-shrink: 0;
-      cursor: pointer;
-      position: relative;
-      z-index: 5;
-      transition: transform .2s, box-shadow .2s;
-    }
-    .commit-node:hover { transform: scale(1.4); }
-
-    .commit-node.type-fail {
-      border-radius: 0;
-      clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
-      background: var(--dans) !important;
-    }
-
-    .commit-node.type-merge {
-      box-shadow: 0 0 0 3px currentColor;
-      background: var(--bg) !important;
-    }
-
-    .commit-node.type-tag-release {
-      border-radius: 0;
-      transform: rotate(45deg);
-      width: 16px; height: 16px;
-    }
-    .commit-node.type-tag-release:hover { transform: rotate(45deg) scale(1.4); }
-
-    .commit-node.type-tag-milestone {
-      border-radius: 0;
-      transform: rotate(45deg);
-      width: 14px; height: 14px;
-    }
-    .commit-node.type-tag-milestone:hover { transform: rotate(45deg) scale(1.4); }
-
-    .commit-info {
-      flex: 1;
-      padding: 4px 8px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background .15s;
-    }
-    .commit-info:hover { background: var(--surface); }
-
-    .commit-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .commit-hash {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .commit-msg {
-      color: var(--text);
-      font-size: 13px;
-      font-weight: 500;
-    }
-    .commit-msg.type-fail { text-decoration: line-through; color: var(--dans); }
-
-    .commit-date {
-      color: var(--muted);
-      font-size: 11px;
-      margin-top: 2px;
-    }
-
-    .tag-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 1px 8px;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 700;
-      background: rgba(240,192,64,.15);
-      color: var(--main);
-      border: 1px solid var(--main);
-    }
-    .tag-badge.release { font-size: 11px; padding: 2px 10px; }
-
-    .branch-label {
-      font-size: 10px;
-      padding: 1px 6px;
-      border-radius: 3px;
-      font-weight: 600;
-      opacity: .8;
-    }
-
-    /* ── DETAIL PANEL ── */
-    #detail-panel {
-      position: fixed;
-      top: 0; right: -440px;
-      width: 420px;
-      height: 100vh;
-      background: var(--surface);
-      border-left: 1px solid var(--border);
-      z-index: 200;
-      transition: right .35s cubic-bezier(.4,0,.2,1);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    #detail-panel.open { right: 0; }
-
-    #detail-panel-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    #detail-close {
-      background: none;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 18px;
-      font-family: var(--font);
-      line-height: 1;
-      padding: 4px 8px;
-      border-radius: 4px;
-      transition: background .15s;
-    }
-    #detail-close:hover { background: var(--border); color: var(--text); }
-
-    #detail-panel-body {
-      padding: 20px;
-      overflow-y: auto;
-      flex: 1;
-    }
-
-    .detail-hash { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
-    .detail-msg { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 12px; line-height: 1.4; }
-    .detail-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
-    .detail-date { color: var(--muted); font-size: 12px; }
-    .detail-desc {
-      color: var(--text);
-      font-size: 13px;
-      line-height: 1.8;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 14px;
-      white-space: pre-wrap;
-    }
-    .detail-tags { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
-
-    /* ── TIMELINE SCRUBBER ── */
-    #timeline-scrubber {
-      position: fixed;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      z-index: 50;
-      align-items: flex-end;
-    }
-
-    .timeline-year {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 0;
-      cursor: pointer;
-    }
-    .timeline-year span {
-      color: var(--muted);
-      font-size: 10px;
-      transition: color .2s;
-    }
-    .timeline-year .tl-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--border);
-      transition: background .2s, transform .2s;
-    }
-    .timeline-year.active span { color: var(--main); }
-    .timeline-year.active .tl-dot { background: var(--main); transform: scale(1.5); }
-
-    /* ── TOOLTIP ── */
-    #tooltip {
-      position: fixed;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 6px 12px;
-      font-size: 11px;
-      color: var(--text);
-      pointer-events: none;
-      z-index: 300;
-      opacity: 0;
-      transition: opacity .15s;
-      max-width: 280px;
-    }
-    #tooltip.visible { opacity: 1; }
-    #tooltip .tt-hash { color: var(--muted); }
-    #tooltip .tt-msg { font-weight: 500; margin-top: 2px; }
-
-    /* ── OVERLAY ── */
-    #overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.4);
-      z-index: 150;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .3s;
-    }
-    #overlay.visible { opacity: 1; pointer-events: all; }
-
-    /* ── RELEASES SIDEBAR ── */
-    #releases-panel {
-      width: 200px;
-      flex-shrink: 0;
-      padding-left: 20px;
-      position: sticky;
-      top: 60px;
-      align-self: flex-start;
-    }
-
-    .releases-title {
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      margin-bottom: 12px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .release-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      padding: 6px 8px;
-      border-radius: 6px;
-      transition: background .15s;
-    }
-    .release-item:hover { background: var(--surface); }
-    .release-item .ri-tag { color: var(--main); font-size: 13px; }
-    .release-item .ri-name { color: var(--text); font-size: 12px; font-weight: 600; }
-    .release-item .ri-date { color: var(--muted); font-size: 10px; }
-
-    /* ── MOBILE ── */
-    @media (max-width: 768px) {
-      :root { --graph-left: 60px; }
-      #releases-panel { display: none; }
-      #timeline-scrubber { display: none; }
-      #detail-panel { width: 100%; right: -100%; }
-      .commit-graph-col { width: 50px; }
-      .branch-label { display: none; }
-      .commit-msg { font-size: 12px; }
-    }
-
-    @media (max-width: 480px) {
-      #topbar { gap: 6px; }
-      .branch-pill { font-size: 9px; padding: 2px 7px; }
-    }
-
-    /* scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* TOP BAR */
+    #topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,17,23,.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 24px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .logo {
+      color: var(--c-main); font-weight: 700; font-size: 13px;
+      margin-right: 8px; white-space: nowrap; letter-spacing: -.02em;
+    }
+    .branch-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 11px 3px 8px; border-radius: 999px;
+      border: 1px solid transparent; cursor: pointer;
+      font-size: 11px; font-family: var(--font); font-weight: 500;
+      transition: all .2s; background: transparent; user-select: none;
+    }
+    .pill-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .branch-pill.active  { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); }
+    .branch-pill.inactive{ opacity: .3; border-color: transparent; }
+    .branch-pill:hover   { opacity: 1 !important; }
+
+    /* PAGE */
+    #page {
+      display: grid;
+      grid-template-columns: 1fr 210px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px 120px;
+    }
+
+    /* README */
+    #readme-section {
+      grid-column: 1 / -1;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; overflow: hidden; margin: 20px 0 28px;
+    }
+    #readme-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 16px; background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      cursor: pointer; user-select: none;
+    }
+    .rh-left { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+    .toggle-chevron { color: var(--muted); font-size: 10px; transition: transform .25s; }
+    #readme-header.collapsed .toggle-chevron { transform: rotate(-90deg); }
+    #readme-body { padding: 24px 28px; }
+    #readme-body.hidden { display: none; }
+
+    .rm-title  { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .rm-title span { color: var(--c-main); }
+    .rm-sub    { color: var(--muted); font-size: 12px; margin-bottom: 18px; }
+    .rm-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .rm-badge  { padding: 3px 11px; border-radius: 5px; font-size: 11px; font-weight: 600; border: 1px solid; }
+    .rm-text   { font-size: 13px; color: #c9d1d9; line-height: 1.9; }
+    .rm-text p { margin-bottom: 10px; }
+    .rm-text strong { color: var(--c-main); font-weight: 600; }
+    .rm-text code {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 4px; padding: 2px 8px; font-size: 11px; color: var(--c-personal);
+    }
+
+    /* GRAPH AREA */
+    #graph-area {
+      grid-column: 1;
+      position: relative;
+      min-height: 100px;
+    }
+
+    #graph-svg-wrap {
+      position: absolute;
+      top: 0; left: 0;
+      width: var(--graph-w);
+      pointer-events: none;
+    }
+    #graph-svg { display: block; overflow: visible; }
+
+    #commits-list { padding-left: var(--graph-w); }
+
+    .commit-row {
+      display: flex; align-items: center;
+      height: var(--row-h);
+      border-radius: 0 8px 8px 0;
+      cursor: pointer;
+      opacity: 0; transform: translateX(-12px);
+      transition: opacity .35s ease, transform .35s ease, background .15s;
+      margin-right: 4px;
+    }
+    .commit-row:hover     { background: var(--surface); }
+    .commit-row.in-view   { opacity: 1; transform: translateX(0); }
+    .commit-row.highlighted { background: var(--surface2) !important; }
+    .commit-row.branch-hidden { display: none !important; }
+
+    .cr-body { flex: 1; padding: 0 14px; min-width: 0; }
+
+    .cr-top { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+
+    .cr-hash { color: var(--muted); font-size: 11px; letter-spacing: .03em; }
+
+    .cr-branch-pill {
+      font-size: 10px; font-weight: 600;
+      padding: 1px 7px; border-radius: 3px; border: 1px solid; white-space: nowrap;
+    }
+
+    .cr-tag {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 10px; font-weight: 700;
+      padding: 1px 8px; border-radius: 4px;
+      border: 1px solid var(--c-main);
+      background: rgba(240,192,64,.1); color: var(--c-main);
+    }
+    .cr-tag.release { font-size: 11px; padding: 2px 10px; }
+
+    .cr-msg {
+      font-size: 13px; font-weight: 500; color: var(--text);
+      margin-top: 3px; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .cr-msg.is-fail    { text-decoration: line-through; color: var(--c-dans); }
+    .cr-msg.is-release { color: var(--c-main); font-weight: 700; }
+
+    .cr-date { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+    /* SIDEBAR */
+    #sidebar {
+      grid-column: 2;
+      padding-left: 20px; padding-top: 4px;
+      position: sticky; top: 56px;
+      align-self: flex-start;
+      max-height: calc(100vh - 70px); overflow-y: auto;
+    }
+    .sb-section { margin-bottom: 28px; }
+    .sb-title {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--muted);
+      margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+    }
+    .release-card {
+      display: flex; gap: 10px; padding: 8px 10px;
+      border-radius: 6px; margin-bottom: 6px; cursor: pointer;
+      transition: background .15s; border: 1px solid transparent;
+    }
+    .release-card:hover { background: var(--surface); border-color: var(--border); }
+    .rc-icon { font-size: 16px; color: var(--c-main); margin-top: 1px; }
+    .rc-tag  { font-size: 13px; font-weight: 700; color: var(--c-main); }
+    .rc-date { font-size: 10px; color: var(--muted); margin-top: 1px; }
+    .rc-msg  { font-size: 10px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+
+    .branch-legend-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 11px; color: var(--muted); }
+    .bl-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* SCRUBBER */
+    #scrubber {
+      position: fixed; right: 12px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 2px; z-index: 50;
+    }
+    .tl-item { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 3px 0; justify-content: flex-end; }
+    .tl-label { font-size: 9px; color: var(--border); transition: color .2s; font-family: var(--font); }
+    .tl-pip   { width: 5px; height: 5px; border-radius: 50%; background: var(--border); transition: background .2s, transform .2s; }
+    .tl-item.active .tl-label { color: var(--c-main); }
+    .tl-item.active .tl-pip   { background: var(--c-main); transform: scale(1.6); }
+
+    /* OVERLAY + DETAIL */
+    #overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.5); z-index: 150;
+      opacity: 0; pointer-events: none; transition: opacity .3s;
+    }
+    #overlay.on { opacity: 1; pointer-events: all; }
+    #detail-panel {
+      position: fixed; top: 0; right: -480px;
+      width: 460px; height: 100vh;
+      background: var(--surface); border-left: 1px solid var(--border);
+      z-index: 200; transition: right .32s cubic-bezier(.4,0,.2,1);
+      display: flex; flex-direction: column;
+    }
+    #detail-panel.open { right: 0; }
+    #dp-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    .dp-label { color: var(--muted); font-size: 11px; }
+    #dp-close {
+      background: none; border: none; color: var(--muted);
+      cursor: pointer; font-size: 16px; font-family: var(--font);
+      padding: 4px 8px; border-radius: 4px; transition: background .15s, color .15s;
+    }
+    #dp-close:hover { background: var(--border); color: var(--text); }
+    #dp-body { padding: 22px; overflow-y: auto; flex: 1; }
+    #dp-hash { font-size: 11px; color: var(--muted); margin-bottom: 10px; font-style: italic; }
+    #dp-msg  { font-size: 17px; font-weight: 700; color: var(--text); line-height: 1.4; margin-bottom: 14px; }
+    #dp-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; align-items: center; }
+    #dp-desc {
+      font-size: 13px; line-height: 1.85; color: #c9d1d9;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 16px; white-space: pre-wrap;
+    }
+    #dp-footer { margin-top: 16px; }
+    .dp-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; padding: 4px 12px; border-radius: 5px; font-weight: 600; }
+    .dp-badge.fail  { background: rgba(224,92,92,.15); color: var(--c-dans); border: 1px solid var(--c-dans); }
+    .dp-badge.merge { background: rgba(240,136,62,.15); color: var(--c-work); border: 1px solid var(--c-work); }
+    .dp-date { color: var(--muted); font-size: 12px; }
+
+    /* TOOLTIP */
+    #tooltip {
+      position: fixed; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 7px 13px; font-size: 11px; color: var(--text);
+      pointer-events: none; z-index: 400; opacity: 0; transition: opacity .12s;
+      max-width: 300px; box-shadow: 0 4px 20px rgba(0,0,0,.4);
+    }
+    #tooltip.on { opacity: 1; }
+    #tt-hash { color: var(--muted); margin-bottom: 2px; }
+    #tt-msg  { font-weight: 500; }
+
+    /* MOBILE */
+    @media (max-width: 800px) {
+      :root { --graph-w: 80px; --lane-w: 14px; --row-h: 60px; }
+      #sidebar { display: none; }
+      #page { grid-template-columns: 1fr; }
+      #scrubber { display: none; }
+      #detail-panel { width: 100%; right: -100%; }
+      .cr-branch-pill { display: none; }
+    }
+    @media (max-width: 500px) {
+      :root { --graph-w: 56px; --lane-w: 10px; }
+      #topbar { padding: 8px 12px; gap: 6px; }
+      .branch-pill { font-size: 9px; padding: 2px 8px 2px 6px; }
+    }
   </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
-<div id="topbar">
-  <div class="logo">⬡ wouter@portfolio:~$</div>
-  <button class="branch-pill active" data-branch="main"     style="color:var(--main)"><span class="dot" style="background:var(--main)"></span>main</button>
-  <button class="branch-pill active" data-branch="education" style="color:var(--education)"><span class="dot" style="background:var(--education)"></span>education</button>
-  <button class="branch-pill active" data-branch="dans"     style="color:var(--dans)"><span class="dot" style="background:var(--dans)"></span>dans</button>
-  <button class="branch-pill active" data-branch="personal-growth" style="color:var(--personal-growth)"><span class="dot" style="background:var(--personal-growth)"></span>personal-growth</button>
-  <button class="branch-pill active" data-branch="international" style="color:var(--international)"><span class="dot" style="background:var(--international)"></span>international</button>
-  <button class="branch-pill active" data-branch="work"     style="color:var(--work)"><span class="dot" style="background:var(--work)"></span>work</button>
-</div>
+<nav id="topbar">
+  <div class="logo">&#11043; wouter@portfolio:~$</div>
+  <button class="branch-pill active" data-branch="education"><span class="pill-dot" style="background:#4f9ef8"></span><span style="color:#4f9ef8">education</span></button>
+  <button class="branch-pill active" data-branch="dans"><span class="pill-dot" style="background:#e05c5c"></span><span style="color:#e05c5c">dans</span></button>
+  <button class="branch-pill active" data-branch="personal-growth"><span class="pill-dot" style="background:#56d364"></span><span style="color:#56d364">personal-growth</span></button>
+  <button class="branch-pill active" data-branch="international"><span class="pill-dot" style="background:#bc8cff"></span><span style="color:#bc8cff">international</span></button>
+  <button class="branch-pill active" data-branch="work"><span class="pill-dot" style="background:#f0883e"></span><span style="color:#f0883e">work</span></button>
+</nav>
 
-<!-- README -->
-<div id="readme-section">
-  <div id="readme-header">
-    <span>📄 README.md</span>
-    <span class="toggle-icon">▼</span>
-  </div>
-  <div id="readme-body">
-    <div class="readme-title"># Wouter Jacobs</div>
-    <div class="readme-subtitle">Application Development &amp; Systems · PXL Hasselt · Graduating 2026</div>
-    <div class="readme-badges">
-      <span class="readme-badge" style="background:rgba(240,192,64,.15);color:var(--main);border:1px solid var(--main)">🏆 Meervoudig Belgisch Kampioen</span>
-      <span class="readme-badge" style="background:rgba(79,158,248,.15);color:var(--education);border:1px solid var(--education)">🎓 PXL Digital AON</span>
-      <span class="readme-badge" style="background:rgba(86,211,100,.15);color:var(--personal-growth);border:1px solid var(--personal-growth)">🕺 VTS Initiator Dans</span>
-      <span class="readme-badge" style="background:rgba(188,140,255,.15);color:var(--international);border:1px solid var(--international)">🌍 Internationaal</span>
-    </div>
-    <div class="readme-text">
-      <p>Welkom op mijn interactief Git-portfolio. Dit is geen gewone CV — het is een <strong>volledige Git-geschiedenis van mijn leven</strong>, gevisualiseerd als een branching commit graph.</p>
-      <p>Ik ben Wouter Jacobs, een gepassioneerde software developer en competitief koppeldanser uit België. Mijn pad was niet lineair: mislukkingen, omwegen en onverwachte avonturen maakten me wie ik ben. Elke commit hieronder vertelt een stuk van dat verhaal.</p>
-      <p><strong>Klik op een commit node</strong> om de volledige beschrijving te lezen. Gebruik de <strong>branch-filters</strong> bovenaan om specifieke domeinen te bekijken. Scroll naar beneden om de tijdlijn te verkennen.</p>
-      <p><code>git log --graph --oneline --all --decorate -- wouter-jacobs</code></p>
-    </div>
-  </div>
-</div>
+<div id="page">
 
-<!-- MAIN LAYOUT -->
-<div id="main-layout">
+  <section id="readme-section">
+    <div id="readme-header">
+      <div class="rh-left"><span>&#128196;</span><span>README.md</span></div>
+      <span class="toggle-chevron">&#9660;</span>
+    </div>
+    <div id="readme-body">
+      <div class="rm-title"><span>#</span> Wouter Jacobs</div>
+      <div class="rm-sub">Application Development &amp; Systems &middot; PXL Hasselt &middot; Graduating 2026</div>
+      <div class="rm-badges">
+        <span class="rm-badge" style="color:#f0c040;border-color:#f0c040;background:rgba(240,192,64,.08)">&#127942; Meervoudig Belgisch Kampioen</span>
+        <span class="rm-badge" style="color:#4f9ef8;border-color:#4f9ef8;background:rgba(79,158,248,.08)">&#127891; PXL Digital AON</span>
+        <span class="rm-badge" style="color:#56d364;border-color:#56d364;background:rgba(86,211,100,.08)">&#128378; VTS Initiator Dans</span>
+        <span class="rm-badge" style="color:#bc8cff;border-color:#bc8cff;background:rgba(188,140,255,.08)">&#127758; Internationaal</span>
+      </div>
+      <div class="rm-text">
+        <p>Welkom op mijn interactief Git-portfolio. Dit is geen gewone CV &mdash; het is een <strong>volledige Git-geschiedenis van mijn leven</strong>, gevisualiseerd als een branching commit graph.</p>
+        <p>Ik ben Wouter Jacobs, een gepassioneerde software developer en competitief koppeldanser uit Belgi&euml;. Mijn pad was niet lineair &mdash; mislukkingen, omwegen en onverwachte avonturen maakten me wie ik ben. Elke commit hieronder vertelt een stuk van dat verhaal.</p>
+        <p><strong>Klik op een commit node</strong> om de volledige beschrijving te lezen. Gebruik de <strong>branch-filters</strong> bovenaan om specifieke domeinen te bekijken.</p>
+        <p><code>git log --graph --oneline --all --decorate -- wouter-jacobs</code></p>
+      </div>
+    </div>
+  </section>
+
   <div id="graph-area">
-    <div id="commits-container"></div>
-    <svg id="graph-svg" style="position:absolute;top:0;left:0;width:100%;pointer-events:none;z-index:1;overflow:visible;"></svg>
+    <div id="graph-svg-wrap">
+      <svg id="graph-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div id="commits-list"></div>
   </div>
-  <div id="releases-panel">
-    <div class="releases-title">⚡ Releases &amp; Tags</div>
-    <div id="releases-list"></div>
-  </div>
+
+  <aside id="sidebar">
+    <div class="sb-section">
+      <div class="sb-title">&#9889; Releases &amp; Tags</div>
+      <div id="releases-list"></div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-title">Branches</div>
+      <div id="branch-legend"></div>
+    </div>
+  </aside>
+
 </div>
 
-<!-- TIMELINE SCRUBBER -->
-<div id="timeline-scrubber"></div>
-
-<!-- DETAIL PANEL -->
+<div id="scrubber"></div>
 <div id="overlay"></div>
 <div id="detail-panel">
-  <div id="detail-panel-header">
-    <span style="color:var(--muted);font-size:12px">commit detail</span>
-    <button id="detail-close">✕</button>
+  <div id="dp-head">
+    <span class="dp-label">commit detail</span>
+    <button id="dp-close">&#10005;</button>
   </div>
-  <div id="detail-panel-body">
-    <div class="detail-hash" id="dp-hash"></div>
-    <div class="detail-msg" id="dp-msg"></div>
-    <div class="detail-meta" id="dp-meta"></div>
-    <div class="detail-desc" id="dp-desc"></div>
-    <div class="detail-tags" id="dp-tags"></div>
+  <div id="dp-body">
+    <div id="dp-hash"></div>
+    <div id="dp-msg"></div>
+    <div id="dp-meta"></div>
+    <div id="dp-desc"></div>
+    <div id="dp-footer"></div>
   </div>
 </div>
 
-<!-- TOOLTIP -->
 <div id="tooltip">
-  <div class="tt-hash" id="tt-hash"></div>
-  <div class="tt-msg" id="tt-msg"></div>
+  <div id="tt-hash"></div>
+  <div id="tt-msg"></div>
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════════
-// COMMIT DATA
-// ══════════════════════════════════════════════════════════════
+"use strict";
+
 const commits = [
-  {
-    hash: "a1f3c2e",
-    branch: "education",
-    message: "Eerste jaar gestart aan UHasselt",
-    date: "Sept 2020",
-    year: 2020,
-    description: "Met veel enthousiasme gestart aan de UHasselt, maar het jaar liep anders dan gepland. Het resulteerde in een mislukking die, achteraf gezien, een belangrijk keerpunt zou worden.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "b2d4e1f",
-    branch: "education",
-    message: "FAIL: studie gestaakt aan UHasselt",
-    date: "Juni 2021",
-    year: 2021,
-    description: "Grandioos gefaald. Op dat moment voelde het als een diepe teleurstelling, maar het zaaide ook het zaad voor iets nieuws. Soms moet je een stap terugzetten om twee stappen vooruit te kunnen gaan.",
-    tags: [],
-    type: "fail"
-  },
-  {
-    hash: "c3a5b2d",
-    branch: "education",
-    message: "Nieuwe start: inschrijving PXL Digital AON",
-    date: "Sept 2021",
-    year: 2021,
-    description: "Met een rugzak vol onzekerheid maar ook vastberadenheid begon ik aan Application Development & Systems aan PXL Hasselt. Dit was het echte beginpunt.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "d4f6c3e",
-    branch: "dans",
-    message: "Danscarrière actief: latin, ballroom en 10-dans",
-    date: "2021 (ongoing)",
-    year: 2021,
-    description: "Naast de studies bleef dans een constante in mijn leven. Competitief koppeldansen op nationaal en internationaal niveau, met trainers uit Duitsland, Denemarken en verder.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "e5b7d4f",
-    branch: "education",
-    message: "Eerste buizen: extra jaar nodig",
-    date: "Juni 2022",
-    year: 2022,
-    description: "Het eerste jaar verliep niet vlekkeloos. Buizen resulteerden in een extra studiejaar. In eerste instantie een teleurstelling, maar al snel herkaderd als een kans om het fundament echt te verstevigen.",
-    tags: [],
-    type: "fail"
-  },
-  {
-    hash: "f6c8e5a",
-    branch: "education",
-    message: "Extra jaar: iedere oefening gemaakt, geen AI",
-    date: "Sept 2022",
-    year: 2022,
-    description: "Het extra jaar werd volledig benut. Elk vak opnieuw genomen, elke oefening gemaakt — zonder uitzondering, zonder AI-hulp. Gewoon studeren, oefenen, herhalen. Die discipline heeft me door de rest van de opleiding gedragen.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "g7d9f6b",
-    branch: "personal-growth",
-    message: "POP-sessie: Brein aan het werk!",
-    date: "5 maart 2024",
-    year: 2024,
-    description: "Sessie over de 'homo digitalis' en de impact van constante digitale verbondenheid op focus en hersenen. Kennismaking met de Eisenhower-matrix en de Pomodoro-techniek.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "h8e0g7c",
-    branch: "personal-growth",
-    message: "POP-sessie: POPping & feedback",
-    date: "5 maart 2024",
-    year: 2024,
-    description: "Diepgaande sessie over teamdynamiek, constructieve feedback via het 4G-model en het opstellen van een Persoonlijk Ontwikkelingsplan.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "i9f1h8d",
-    branch: "education",
-    message: "Projectweek 2TIN: Ken jezelf, netwerken & jobevent",
-    date: "12-16 feb 2024",
-    year: 2024,
-    description: "Intensieve projectweek met sessies over kernkwadranten, feedback, Agile, LinkedIn en netwerken. Afgesloten met het PXL Jobevent in de Trixxo Arena.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "j0g2i9e",
-    branch: "work",
-    message: "Zomerjob: Software Developer bij InfoSupport",
-    date: "Zomer 2024",
-    year: 2024,
-    description: "Een maand lang als software developer aan de slag bij InfoSupport. Eerste echte professionele ervaring in een IT-bedrijf, inclusief een gastlezing op de interne kennisavond.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "k1h3j0f",
-    branch: "work",
-    message: "ISKA: eerste professionele presentatie voor publiek",
-    date: "Zomer 2024",
-    year: 2024,
-    description: "Samen met een medestudent meer dan een uur voor een professioneel publiek van InfoSupport-medewerkers gestaan. Technische architectuur, gebruikte technologieën en eigen ervaringen toegelicht. Een mijlpaal voor mijn presentatievaardigheden.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "l2i4k1g",
-    branch: "personal-growth",
-    message: "VTS Initiator diploma behaald",
-    date: "2024",
-    year: 2024,
-    description: "Meerdere maanden de Initiator-cursus gevolgd aan de Vlaamse Trainersschool. Diploma erkend dansleraar behaald, met vakken over didactiek, trainingspraktijken en groepsdynamiek.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "m3j5l2h",
-    branch: "personal-growth",
-    message: "Vrijwilliger: koppeldanslessen bij Dansdroom vzw",
-    date: "Schooljaar 2024-2025",
-    year: 2024,
-    description: "Een volledig schooljaar koppeldanslessen gegeven als vrijwilliger, samen met danspartner. Jong en oud, beginners en gevorderden, iedereen meegekregen. Altruïstisch gemotiveerd: het dansen in België een duwtje in de rug geven.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "n4k6m3i",
-    branch: "dans",
-    message: "Meervoudig Belgisch Kampioen Latin & 10-dans",
-    date: "2024",
-    year: 2024,
-    description: "Eerste grote doelstelling van de studies bereikt: meervoudig Belgisch kampioen latin, 10-dans en ballroom. Een bekroning van jaren training, discipline en toewijding.",
-    tags: ["v1.0"],
-    type: "tag-milestone"
-  },
-  {
-    hash: "o5l7n4j",
-    branch: "international",
-    message: "Bezoek aan Oekraïne — een maand in oorlogstijd",
-    date: "2024",
-    year: 2024,
-    description: "Een maand in Oekraïne: van de rust van de Karpaten naar luchtalarms in Lviv en zware bombardementen in Kyiv. Schokgolven van explosies, hypersonische raketten, honderden drones. De meest intense en levensveranderende ervaring tot nu toe. Carpe diem is geen cliché meer.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "p6m8o5k",
-    branch: "personal-growth",
-    message: "Student Startup Coaching bij PXL",
-    date: "2024-2025",
-    year: 2024,
-    description: "Reeks gesprekken en denkoefeningen over de haalbaarheid van een eigen onderneming. Businessmodellen, uitdagingen als starter, volharding. Ambitie niet getemperd, maar scherper gemaakt.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "q7n9p6l",
-    branch: "education",
-    message: "POP-sessie 3TIN: My Team and I — Lencioni & Tuckman",
-    date: "8 okt 2025",
-    year: 2025,
-    description: "Sessie over effectief samenwerken via Lencioni's piramide en Tuckman's fasenmodel. Aangevuld met fysieke teambuildingactiviteiten: balken verplaatsen, spinnenweb navigeren. Goede teamdynamiek en gedeelde inzichten voor het IT-project.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "r8o0q7m",
-    branch: "education",
-    message: "Innovatieroute DDD: Event Storming & strategische analyse",
-    date: "Oktober 2025",
-    year: 2025,
-    description: "Eerste sessie van de DDD-innovatieroute op Corda Campus. Theorie over Domain Driven Design en hands-on Event Storming voor een Spotify-analoge applicatie. Abstract maar boeiend zodra de postits aan de muur hingen.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "s9p1r8n",
-    branch: "education",
-    message: "Innovatieroute DDD: Aggregates, Value Objects & Domain Events",
-    date: "Oktober 2025",
-    year: 2025,
-    description: "Tweede sessie geleid door Daniël Mertens (InfoSupport). Vertaalslag van Event Storming naar code: domeinlaag, Aggregates en Value Objects. Uitdagend conceptueel maar een sterke basis voor Fullstack .NET later.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "t0q2s9o",
-    branch: "education",
-    message: "Innovatieroute DDD: Onion Architecture, Persistence & Messaging",
-    date: "Oktober 2025",
-    year: 2025,
-    description: "Derde en laatste sessie. Communicatielaag, Onion Architecture en messaging via een berichtenbus. Resultaat: een volledig werkende DDD-applicatie. Het geheel klikte eindelijk samen.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "u1r3t0p",
-    branch: "international",
-    message: "BusIT Week @ Howest: Smart Car Race",
-    date: "31 maart – 4 april 2025",
-    year: 2025,
-    description: "Internationale uitwisselingsweek in Brugge. Samen met een Howest-student en een Erasmusstudent uit Turkije een autonoom rijdende auto geprogrammeerd via Raspberry Pi. Nerf battle, indoor klimmen (hoogtevrees overwonnen), boottocht door Brugge, Ribs 'n Beer met studenten uit heel Europa. Subtop in de race.",
-    tags: [],
-    type: "normal"
-  },
-  {
-    hash: "v2s4u1q",
-    branch: "work",
-    message: "Hackathon PXL Smart ICT: AI-sanitatie van gebruikersinput",
-    date: "16-17 feb 2026",
-    year: 2026,
-    description: "Tweedaagse interne hackathon. AI geïntegreerd als functioneel product: gebruikersinput automatisch gesaneerd via prompt engineering, jailbreak-preventie en OpenRouter budgetbeheer. Twee minuten voor de presentatie crashte de app — toch opgelost en gewonnen. Groep 2 beste van de hackathon.",
-    tags: [],
-    type: "merge"
-  },
-  {
-    hash: "w3t5v2r",
-    branch: "education",
-    message: "Afstuderen PXL Digital AON",
-    date: "2026",
-    year: 2026,
-    description: "Vier jaar later. Langer dan gepland, maar precies zoals het moest zijn. Dit portfolio is geen eindpunt maar een momentopname. De volgende bladzijde wordt geschreven in het werkveld.",
-    tags: ["v4.0"],
-    type: "tag-release"
-  }
+  { hash:"a1f3c2e", branch:"education",      year:2020, date:"Sept 2020",            message:"Eerste jaar gestart aan UHasselt",                                   description:"Met veel enthousiasme gestart aan de UHasselt, maar het jaar liep anders dan gepland. Het resulteerde in een mislukking die, achteraf gezien, een belangrijk keerpunt zou worden.",                                                                                                                                                                                                                                       tags:[], type:"normal" },
+  { hash:"b2d4e1f", branch:"education",      year:2021, date:"Juni 2021",             message:"FAIL: studie gestaakt aan UHasselt",                                  description:"Grandioos gefaald. Op dat moment voelde het als een diepe teleurstelling, maar het zaaide ook het zaad voor iets nieuws. Soms moet je een stap terugzetten om twee stappen vooruit te kunnen gaan.",                                                                                                                                                                                                                           tags:[], type:"fail" },
+  { hash:"c3a5b2d", branch:"education",      year:2021, date:"Sept 2021",            message:"Nieuwe start: inschrijving PXL Digital AON",                          description:"Met een rugzak vol onzekerheid maar ook vastberadenheid begon ik aan Application Development & Systems aan PXL Hasselt. Dit was het echte beginpunt.",                                                                                                                                                                                                                                                                          tags:[], type:"normal" },
+  { hash:"d4f6c3e", branch:"dans",           year:2021, date:"2021 (ongoing)",       message:"Danscarriere actief: latin, ballroom en 10-dans",                     description:"Naast de studies bleef dans een constante in mijn leven. Competitief koppeldansen op nationaal en internationaal niveau, met trainers uit Duitsland, Denemarken en verder.",                                                                                                                                                                                                                                                       tags:[], type:"normal" },
+  { hash:"e5b7d4f", branch:"education",      year:2022, date:"Juni 2022",            message:"Eerste buizen: extra jaar nodig",                                     description:"Het eerste jaar verliep niet vlekkeloos. Buizen resulteerden in een extra studiejaar. In eerste instantie een teleurstelling, maar al snel herkaderd als een kans om het fundament echt te verstevigen.",                                                                                                                                                                                                                          tags:[], type:"fail" },
+  { hash:"f6c8e5a", branch:"education",      year:2022, date:"Sept 2022",            message:"Extra jaar: iedere oefening gemaakt, geen AI",                        description:"Het extra jaar werd volledig benut. Elk vak opnieuw genomen, elke oefening gemaakt - zonder uitzondering, zonder AI-hulp. Gewoon studeren, oefenen, herhalen. Die discipline heeft me door de rest van de opleiding gedragen.",                                                                                                                                                                                                   tags:[], type:"normal" },
+  { hash:"g7d9f6b", branch:"personal-growth",year:2024, date:"5 maart 2024",         message:"POP-sessie: Brein aan het werk!",                                     description:"Sessie over de 'homo digitalis' en de impact van constante digitale verbondenheid op focus en hersenen. Kennismaking met de Eisenhower-matrix en de Pomodoro-techniek.",                                                                                                                                                                                                                                                   tags:[], type:"normal" },
+  { hash:"h8e0g7c", branch:"personal-growth",year:2024, date:"5 maart 2024",         message:"POP-sessie: POPping & feedback",                                      description:"Diepgaande sessie over teamdynamiek, constructieve feedback via het 4G-model en het opstellen van een Persoonlijk Ontwikkelingsplan.",                                                                                                                                                                                                                                                                                      tags:[], type:"normal" },
+  { hash:"i9f1h8d", branch:"education",      year:2024, date:"12-16 feb 2024",       message:"Projectweek 2TIN: Ken jezelf, netwerken & jobevent",                  description:"Intensieve projectweek met sessies over kernkwadranten, feedback, Agile, LinkedIn en netwerken. Afgesloten met het PXL Jobevent in de Trixxo Arena.",                                                                                                                                                                                                                                                                      tags:[], type:"normal" },
+  { hash:"j0g2i9e", branch:"work",           year:2024, date:"Zomer 2024",           message:"Zomerjob: Software Developer bij InfoSupport",                        description:"Een maand lang als software developer aan de slag bij InfoSupport. Eerste echte professionele ervaring in een IT-bedrijf, inclusief een gastlezing op de interne kennisavond.",                                                                                                                                                                                                                                              tags:[], type:"normal" },
+  { hash:"k1h3j0f", branch:"work",           year:2024, date:"Zomer 2024",           message:"ISKA: eerste professionele presentatie voor publiek",                  description:"Samen met een medestudent meer dan een uur voor een professioneel publiek van InfoSupport-medewerkers gestaan. Technische architectuur, gebruikte technologieen en eigen ervaringen toegelicht. Een mijlpaal voor mijn presentatievaardigheden.",                                                                                                                                                                            tags:[], type:"normal" },
+  { hash:"l2i4k1g", branch:"personal-growth",year:2024, date:"2024",                 message:"VTS Initiator diploma behaald",                                       description:"Meerdere maanden de Initiator-cursus gevolgd aan de Vlaamse Trainersschool. Diploma erkend dansleraar behaald, met vakken over didactiek, trainingspraktijken en groepsdynamiek.",                                                                                                                                                                                                                                          tags:[], type:"normal" },
+  { hash:"m3j5l2h", branch:"personal-growth",year:2024, date:"Schooljaar 2024-2025", message:"Vrijwilliger: koppeldanslessen bij Dansdroom vzw",                    description:"Een volledig schooljaar koppeldanslessen gegeven als vrijwilliger, samen met danspartner. Jong en oud, beginners en gevorderden, iedereen meegekregen. Altruistisch gemotiveerd: het dansen in Belgie een duwtje in de rug geven.",                                                                                                                                                                                        tags:[], type:"normal" },
+  { hash:"n4k6m3i", branch:"dans",           year:2024, date:"2024",                 message:"Meervoudig Belgisch Kampioen Latin & 10-dans",                        description:"Eerste grote doelstelling van de studies bereikt: meervoudig Belgisch kampioen latin, 10-dans en ballroom. Een bekroning van jaren training, discipline en toewijding.",                                                                                                                                                                                                                                                      tags:["v1.0"], type:"tag-milestone" },
+  { hash:"o5l7n4j", branch:"international",  year:2024, date:"2024",                 message:"Bezoek aan Oekraine - een maand in oorlogstijd",                      description:"Een maand in Oekraine: van de rust van de Karpaten naar luchtalarms in Lviv en zware bombardementen in Kyiv. Schokgolven van explosies, hypersonische raketten, honderden drones. De meest intense en levensveranderende ervaring tot nu toe. Carpe diem is geen cliche meer.",                                                                                                                                                  tags:[], type:"normal" },
+  { hash:"p6m8o5k", branch:"personal-growth",year:2024, date:"2024-2025",            message:"Student Startup Coaching bij PXL",                                   description:"Reeks gesprekken en denkoefeningen over de haalbaarheid van een eigen onderneming. Businessmodellen, uitdagingen als starter, volharding. Ambitie niet getemperd, maar scherper gemaakt.",                                                                                                                                                                                                                            tags:[], type:"normal" },
+  { hash:"q7n9p6l", branch:"education",      year:2025, date:"8 okt 2025",           message:"POP-sessie 3TIN: My Team and I - Lencioni & Tuckman",                 description:"Sessie over effectief samenwerken via Lencioni's piramide en Tuckman's fasenmodel. Aangevuld met fysieke teambuildingactiviteiten: balken verplaatsen, spinnenweb navigeren. Goede teamdynamiek en gedeelde inzichten voor het IT-project.",                                                                                                                                                                         tags:[], type:"normal" },
+  { hash:"r8o0q7m", branch:"education",      year:2025, date:"Oktober 2025",         message:"Innovatieroute DDD: Event Storming & strategische analyse",            description:"Eerste sessie van de DDD-innovatieroute op Corda Campus. Theorie over Domain Driven Design en hands-on Event Storming voor een Spotify-analoge applicatie. Abstract maar boeiend zodra de postits aan de muur hingen.",                                                                                                                                                                                                     tags:[], type:"normal" },
+  { hash:"s9p1r8n", branch:"education",      year:2025, date:"Oktober 2025",         message:"Innovatieroute DDD: Aggregates, Value Objects & Domain Events",       description:"Tweede sessie geleid door Daniel Mertens (InfoSupport). Vertaalslag van Event Storming naar code: domeinlaag, Aggregates en Value Objects. Uitdagend conceptueel maar een sterke basis voor Fullstack .NET later.",                                                                                                                                                                                                           tags:[], type:"normal" },
+  { hash:"t0q2s9o", branch:"education",      year:2025, date:"Oktober 2025",         message:"Innovatieroute DDD: Onion Architecture, Persistence & Messaging",     description:"Derde en laatste sessie. Communicatielaag, Onion Architecture en messaging via een berichtenbus. Resultaat: een volledig werkende DDD-applicatie. Het geheel klikte eindelijk samen.",                                                                                                                                                                                                                                       tags:[], type:"normal" },
+  { hash:"u1r3t0p", branch:"international",  year:2025, date:"31 maart - 4 april 2025", message:"BusIT Week @ Howest: Smart Car Race",                             description:"Internationale uitwisselingsweek in Brugge. Samen met een Howest-student en een Erasmusstudent uit Turkije een autonoom rijdende auto geprogrammeerd via Raspberry Pi. Nerf battle, indoor klimmen (hoogtevrees overwonnen), boottocht door Brugge, Ribs n Beer met studenten uit heel Europa. Subtop in de race.",                                                                                                       tags:[], type:"normal" },
+  { hash:"v2s4u1q", branch:"work",           year:2026, date:"16-17 feb 2026",       message:"Hackathon PXL Smart ICT: AI-sanitatie van gebruikersinput",           description:"Tweedaagse interne hackathon. AI geintegreerd als functioneel product: gebruikersinput automatisch gesaneerd via prompt engineering, jailbreak-preventie en OpenRouter budgetbeheer. Twee minuten voor de presentatie crashte de app - toch opgelost en gewonnen. Groep 2 beste van de hackathon.",                                                                                                                              tags:[], type:"merge" },
+  { hash:"w3t5v2r", branch:"education",      year:2026, date:"2026",                 message:"Afstuderen PXL Digital AON",                                         description:"Vier jaar later. Langer dan gepland, maar precies zoals het moest zijn. Dit portfolio is geen eindpunt maar een momentopname. De volgende bladzijde wordt geschreven in het werkveld.",                                                                                                                                                                                                                                 tags:["v4.0"], type:"tag-release" },
 ];
 
-// ══════════════════════════════════════════════════════════════
-// BRANCH CONFIG
-// ══════════════════════════════════════════════════════════════
-const branchConfig = {
-  "main":           { color: "#f0c040", lane: 0 },
-  "education":      { color: "#4f9ef8", lane: 1 },
-  "dans":           { color: "#e05c5c", lane: 2 },
-  "personal-growth":{ color: "#56d364", lane: 3 },
-  "international":  { color: "#bc8cff", lane: 4 },
-  "work":           { color: "#f0883e", lane: 5 }
+const BRANCHES = {
+  "education":      { color: "#4f9ef8", lane: 0 },
+  "dans":           { color: "#e05c5c", lane: 1 },
+  "personal-growth":{ color: "#56d364", lane: 2 },
+  "international":  { color: "#bc8cff", lane: 3 },
+  "work":           { color: "#f0883e", lane: 4 },
 };
 
-const LANE_WIDTH = 28;
-const GRAPH_COL_WIDTH = 200;
-const ROW_HEIGHT = 56;
+// These must match :root CSS vars
+const LANE_W    = 22;
+const ROW_H     = 64;
+const GRAPH_W   = 160;
+const NODE_R    = 6;
+const LANE_LEFT = 18; // x of lane 0
 
-// ══════════════════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════════════════
-const activeBranches = new Set(Object.keys(branchConfig));
+const activeBranches = new Set(Object.keys(BRANCHES));
 let selectedHash = null;
 
-// ══════════════════════════════════════════════════════════════
-// BUILD UI
-// ══════════════════════════════════════════════════════════════
-function getBranchColor(branch) {
-  return (branchConfig[branch] || {}).color || "#8b949e";
+function branchColor(b) { return (BRANCHES[b] || {}).color || "#8b949e"; }
+function branchLane(b)  { return BRANCHES[b] != null ? BRANCHES[b].lane : 0; }
+function laneX(lane)    { return LANE_LEFT + lane * LANE_W; }
+function commitX(b)     { return laneX(branchLane(b)); }
+function rowY(i)        { return i * ROW_H + ROW_H / 2; }
+
+function svgEl(tag, attrs) {
+  const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const k in attrs) el.setAttribute(k, attrs[k]);
+  return el;
 }
 
-function getLane(branch) {
-  return (branchConfig[branch] || {}).lane || 0;
-}
+// ── BUILD ROWS ──
+function buildRows() {
+  const list = document.getElementById("commits-list");
+  list.innerHTML = "";
 
-function buildCommitRows() {
-  const container = document.getElementById("commits-container");
-  container.innerHTML = "";
-
-  commits.forEach((commit, index) => {
-    const color = getBranchColor(commit.branch);
-    const lane = getLane(commit.branch);
-    const xOffset = GRAPH_COL_WIDTH - 20 - (5 - lane) * LANE_WIDTH;
-
+  commits.forEach(function(c) {
+    const color = branchColor(c.branch);
     const row = document.createElement("div");
     row.className = "commit-row";
-    row.dataset.hash = commit.hash;
-    row.dataset.branch = commit.branch;
-    row.dataset.year = commit.year;
-    row.dataset.index = index;
+    row.dataset.hash   = c.hash;
+    row.dataset.branch = c.branch;
+    row.dataset.year   = c.year;
+    if (!activeBranches.has(c.branch)) row.classList.add("branch-hidden");
 
-    if (!activeBranches.has(commit.branch)) {
-      row.classList.add("hidden-branch");
-    }
+    const body = document.createElement("div");
+    body.className = "cr-body";
 
-    // Graph column with the node
-    const graphCol = document.createElement("div");
-    graphCol.className = "commit-graph-col";
-    graphCol.style.width = GRAPH_COL_WIDTH + "px";
-
-    const node = document.createElement("div");
-    node.className = `commit-node type-${commit.type}`;
-    node.style.background = color;
-    node.style.color = color;
-    node.style.marginLeft = xOffset + "px";
-    node.style.position = "absolute";
-    node.style.left = xOffset + "px";
-
-    if (commit.type === "merge") {
-      node.style.border = `3px solid ${color}`;
-      node.style.background = "var(--bg)";
-      node.style.boxShadow = `0 0 0 2px ${color}44`;
-    }
-
-    node.title = commit.hash + " — " + commit.message;
-    node.addEventListener("click", (e) => { e.stopPropagation(); openDetail(commit); });
-    node.addEventListener("mouseenter", (e) => showTooltip(e, commit));
-    node.addEventListener("mousemove", (e) => moveTooltip(e));
-    node.addEventListener("mouseleave", hideTooltip);
-
-    graphCol.appendChild(node);
-
-    // Info column
-    const info = document.createElement("div");
-    info.className = "commit-info";
-    info.addEventListener("click", () => openDetail(commit));
-
-    const meta = document.createElement("div");
-    meta.className = "commit-meta";
+    const top = document.createElement("div");
+    top.className = "cr-top";
 
     const hashEl = document.createElement("span");
-    hashEl.className = "commit-hash";
-    hashEl.textContent = commit.hash;
+    hashEl.className = "cr-hash";
+    hashEl.textContent = c.hash;
 
-    const branchLabel = document.createElement("span");
-    branchLabel.className = "branch-label";
-    branchLabel.style.color = color;
-    branchLabel.style.border = `1px solid ${color}44`;
-    branchLabel.style.background = color + "15";
-    branchLabel.textContent = commit.branch;
+    const bpill = document.createElement("span");
+    bpill.className = "cr-branch-pill";
+    bpill.textContent = c.branch;
+    bpill.style.color = color;
+    bpill.style.borderColor = color + "55";
+    bpill.style.background  = color + "18";
 
-    meta.appendChild(hashEl);
-    meta.appendChild(branchLabel);
+    top.appendChild(hashEl);
+    top.appendChild(bpill);
 
-    // Tags inline
-    commit.tags.forEach(tag => {
+    c.tags.forEach(function(tag) {
       const tb = document.createElement("span");
-      tb.className = "tag-badge" + (commit.type === "tag-release" ? " release" : "");
-      tb.textContent = (commit.type === "tag-release" ? "★ " : "◆ ") + tag;
-      meta.appendChild(tb);
+      tb.className = "cr-tag" + (c.type === "tag-release" ? " release" : "");
+      tb.textContent = (c.type === "tag-release" ? "★ " : "◆ ") + tag;
+      top.appendChild(tb);
     });
 
-    const msgEl = document.createElement("div");
-    msgEl.className = `commit-msg${commit.type === "fail" ? " type-fail" : ""}`;
-    msgEl.textContent = commit.message;
+    const msg = document.createElement("div");
+    msg.className = "cr-msg"
+      + (c.type === "fail"        ? " is-fail"    : "")
+      + (c.type === "tag-release" ? " is-release" : "");
+    msg.textContent = c.message;
 
-    const dateEl = document.createElement("div");
-    dateEl.className = "commit-date";
-    dateEl.textContent = commit.date;
+    const date = document.createElement("div");
+    date.className = "cr-date";
+    date.textContent = c.date;
 
-    info.appendChild(meta);
-    info.appendChild(msgEl);
-    info.appendChild(dateEl);
+    body.appendChild(top);
+    body.appendChild(msg);
+    body.appendChild(date);
+    row.appendChild(body);
 
-    row.appendChild(graphCol);
-    row.appendChild(info);
-    container.appendChild(row);
+    row.addEventListener("click",      function()  { openDetail(c); });
+    row.addEventListener("mouseenter", function(e) { showTooltip(e, c); });
+    row.addEventListener("mousemove",  moveTooltip);
+    row.addEventListener("mouseleave", hideTooltip);
+
+    list.appendChild(row);
   });
 
-  drawSVGLines();
-  buildReleasesList();
-  setupScrollAnimations();
+  buildSVG();
+  buildReleases();
+  buildBranchLegend();
+  buildScrubber();
+  setupObserver();
 }
 
-// ══════════════════════════════════════════════════════════════
-// SVG GRAPH LINES
-// ══════════════════════════════════════════════════════════════
-function drawSVGLines() {
+// ── BUILD SVG ──
+function buildSVG() {
   const svg = document.getElementById("graph-svg");
   svg.innerHTML = "";
 
-  const rows = Array.from(document.querySelectorAll(".commit-row:not(.hidden-branch)"));
-  if (rows.length < 2) return;
+  // Collect visible commits in order
+  const vis = [];
+  commits.forEach(function(c) {
+    if (activeBranches.has(c.branch)) vis.push(c);
+  });
 
-  // Map branch to last visible row index
-  const branchLastRow = {};
+  const totalH = vis.length * ROW_H;
+  svg.setAttribute("width",  GRAPH_W);
+  svg.setAttribute("height", Math.max(totalH, ROW_H));
+  document.getElementById("graph-svg-wrap").style.height = Math.max(totalH, ROW_H) + "px";
 
-  rows.forEach((row, idx) => {
-    const branch = row.dataset.branch;
-    const color = getBranchColor(branch);
-    const lane = getLane(branch);
-    const x = GRAPH_COL_WIDTH - 20 - (5 - lane) * LANE_WIDTH + 7;
-    const y = row.offsetTop + 10;
+  if (vis.length === 0) return;
 
-    if (branchLastRow[branch] !== undefined) {
-      const prevRow = rows[branchLastRow[branch]];
-      const prevLane = getLane(prevRow.dataset.branch);
-      const px = GRAPH_COL_WIDTH - 20 - (5 - prevLane) * LANE_WIDTH + 7;
-      const py = prevRow.offsetTop + 10;
-
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      const midY = (py + y) / 2;
-      path.setAttribute("d", `M ${px} ${py} C ${px} ${midY}, ${x} ${midY}, ${x} ${y}`);
-      path.setAttribute("stroke", color);
-      path.setAttribute("stroke-width", "2");
-      path.setAttribute("fill", "none");
-      path.setAttribute("opacity", "0.6");
-      svg.appendChild(path);
+  // -- Draw lane lines first (behind nodes) --
+  // Group visible commits by lane, track first/last visIdx per lane
+  const laneInfo = {}; // lane -> { color, first, last }
+  vis.forEach(function(c, vi) {
+    const lane = branchLane(c.branch);
+    const color = branchColor(c.branch);
+    if (!laneInfo[lane]) {
+      laneInfo[lane] = { color: color, first: vi, last: vi };
+    } else {
+      laneInfo[lane].last = vi;
     }
+  });
 
-    branchLastRow[branch] = idx;
+  Object.keys(laneInfo).forEach(function(lane) {
+    const info = laneInfo[lane];
+    const x = laneX(parseInt(lane));
+    const y1 = rowY(info.first);
+    const y2 = rowY(info.last);
+    if (y2 > y1) {
+      svg.appendChild(svgEl("line", {
+        x1: x, y1: y1, x2: x, y2: y2,
+        stroke: info.color, "stroke-width": "2", opacity: "0.3"
+      }));
+    }
+  });
+
+  // -- Draw bezier connectors between consecutive commits on same branch --
+  // track last visIdx per branch
+  const lastVisByBranch = {};
+  vis.forEach(function(c, vi) {
+    if (lastVisByBranch[c.branch] != null) {
+      const prevVi = lastVisByBranch[c.branch];
+      const x  = commitX(c.branch);
+      const y1 = rowY(prevVi);
+      const y2 = rowY(vi);
+      const mid = (y1 + y2) / 2;
+      const color = branchColor(c.branch);
+      svg.appendChild(svgEl("path", {
+        d: "M " + x + " " + y1 + " C " + x + " " + mid + ", " + x + " " + mid + ", " + x + " " + y2,
+        stroke: color, "stroke-width": "2", fill: "none", opacity: "0.55"
+      }));
+    }
+    lastVisByBranch[c.branch] = vi;
+  });
+
+  // -- Draw nodes on top --
+  vis.forEach(function(c, vi) {
+    const color = branchColor(c.branch);
+    const x = commitX(c.branch);
+    const y = rowY(vi);
+
+    if (c.type === "fail") {
+      const s = NODE_R * 0.9;
+      svg.appendChild(svgEl("line", { x1: x-s, y1: y-s, x2: x+s, y2: y+s, stroke: color, "stroke-width": "2.5", "stroke-linecap": "round" }));
+      svg.appendChild(svgEl("line", { x1: x+s, y1: y-s, x2: x-s, y2: y+s, stroke: color, "stroke-width": "2.5", "stroke-linecap": "round" }));
+    } else if (c.type === "merge") {
+      svg.appendChild(svgEl("circle", { cx: x, cy: y, r: NODE_R + 4, fill: "none", stroke: color, "stroke-width": "1.5", opacity: "0.4" }));
+      svg.appendChild(svgEl("circle", { cx: x, cy: y, r: NODE_R,     fill: "#0d1117", stroke: color, "stroke-width": "2.5" }));
+    } else if (c.type === "tag-release") {
+      const s = NODE_R + 4;
+      svg.appendChild(svgEl("circle", { cx: x, cy: y, r: s + 5, fill: "none", stroke: color, "stroke-width": "1", opacity: "0.2" }));
+      svg.appendChild(svgEl("polygon", { points: x+","+( y-s)+" "+(x+s)+","+y+" "+x+","+(y+s)+" "+(x-s)+","+y, fill: color, stroke: "#f0c040", "stroke-width": "1.5" }));
+    } else if (c.type === "tag-milestone") {
+      const s = NODE_R + 2;
+      svg.appendChild(svgEl("polygon", { points: x+","+( y-s)+" "+(x+s)+","+y+" "+x+","+(y+s)+" "+(x-s)+","+y, fill: color, stroke: "#f0c040", "stroke-width": "1" }));
+    } else {
+      svg.appendChild(svgEl("circle", { cx: x, cy: y, r: NODE_R, fill: color }));
+    }
   });
 }
 
-// ══════════════════════════════════════════════════════════════
-// RELEASES LIST
-// ══════════════════════════════════════════════════════════════
-function buildReleasesList() {
+// ── RELEASES ──
+function buildReleases() {
   const list = document.getElementById("releases-list");
   list.innerHTML = "";
-  commits.filter(c => c.tags.length > 0).forEach(commit => {
-    commit.tags.forEach(tag => {
-      const item = document.createElement("div");
-      item.className = "release-item";
-      item.innerHTML = `
-        <span class="ri-tag">${commit.type === "tag-release" ? "★" : "◆"}</span>
-        <div>
-          <div class="ri-name">${tag}</div>
-          <div class="ri-date">${commit.date}</div>
-          <div class="ri-date" style="color:var(--muted);margin-top:2px;font-size:9px">${commit.message}</div>
-        </div>`;
-      item.addEventListener("click", () => openDetail(commit));
-      list.appendChild(item);
+  commits.filter(function(c) { return c.tags.length > 0; }).forEach(function(c) {
+    c.tags.forEach(function(tag) {
+      const card = document.createElement("div");
+      card.className = "release-card";
+      card.innerHTML = "<div class='rc-icon'>" + (c.type === "tag-release" ? "★" : "◆") + "</div>"
+        + "<div><div class='rc-tag'>" + tag + "</div><div class='rc-date'>" + c.date + "</div><div class='rc-msg'>" + c.message + "</div></div>";
+      card.addEventListener("click", function() { openDetail(c); });
+      list.appendChild(card);
     });
   });
 }
 
-// ══════════════════════════════════════════════════════════════
-// BRANCH FILTER
-// ══════════════════════════════════════════════════════════════
-document.querySelectorAll(".branch-pill").forEach(pill => {
-  pill.addEventListener("click", () => {
+// ── BRANCH LEGEND ──
+function buildBranchLegend() {
+  const el = document.getElementById("branch-legend");
+  el.innerHTML = "";
+  Object.entries(BRANCHES).forEach(function(pair) {
+    const name = pair[0], cfg = pair[1];
+    const item = document.createElement("div");
+    item.className = "branch-legend-item";
+    item.innerHTML = "<div class='bl-dot' style='background:" + cfg.color + "'></div><span>" + name + "</span>";
+    el.appendChild(item);
+  });
+}
+
+// ── SCRUBBER ──
+const YEARS = [2020, 2021, 2022, 2023, 2024, 2025, 2026];
+
+function buildScrubber() {
+  const el = document.getElementById("scrubber");
+  el.innerHTML = "";
+  YEARS.forEach(function(year) {
+    const item = document.createElement("div");
+    item.className = "tl-item";
+    item.dataset.year = year;
+    item.innerHTML = "<span class='tl-label'>" + year + "</span><div class='tl-pip'></div>";
+    item.addEventListener("click", function() {
+      const row = document.querySelector(".commit-row[data-year='" + year + "']:not(.branch-hidden)");
+      if (row) row.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    el.appendChild(item);
+  });
+}
+
+function updateScrubber() {
+  const mid = window.scrollY + window.innerHeight / 2;
+  let best = null, bestDist = Infinity;
+  document.querySelectorAll(".commit-row:not(.branch-hidden)").forEach(function(row) {
+    const rect = row.getBoundingClientRect();
+    const rowMid = window.scrollY + rect.top + rect.height / 2;
+    const d = Math.abs(rowMid - mid);
+    if (d < bestDist) { bestDist = d; best = row; }
+  });
+  const activeYear = best ? parseInt(best.dataset.year) : null;
+  document.querySelectorAll(".tl-item").forEach(function(el) {
+    el.classList.toggle("active", parseInt(el.dataset.year) === activeYear);
+  });
+}
+
+// ── SCROLL OBSERVER ──
+function setupObserver() {
+  const obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add("in-view"); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.05, rootMargin: "0px 0px -20px 0px" });
+  document.querySelectorAll(".commit-row").forEach(function(r) { obs.observe(r); });
+}
+
+// ── BRANCH FILTER ──
+document.querySelectorAll(".branch-pill").forEach(function(pill) {
+  pill.addEventListener("click", function() {
     const branch = pill.dataset.branch;
     if (activeBranches.has(branch)) {
+      if (activeBranches.size === 1) return;
       activeBranches.delete(branch);
-      pill.classList.remove("active");
-      pill.classList.add("inactive");
+      pill.classList.replace("active", "inactive");
     } else {
       activeBranches.add(branch);
-      pill.classList.add("active");
-      pill.classList.remove("inactive");
+      pill.classList.replace("inactive", "active");
     }
-    // Show/hide rows
-    document.querySelectorAll(".commit-row").forEach(row => {
-      if (activeBranches.has(row.dataset.branch)) {
-        row.classList.remove("hidden-branch");
-      } else {
-        row.classList.add("hidden-branch");
-      }
+    document.querySelectorAll(".commit-row").forEach(function(row) {
+      row.classList.toggle("branch-hidden", !activeBranches.has(row.dataset.branch));
     });
-    // Redraw lines after DOM settles
-    requestAnimationFrame(() => {
-      drawSVGLines();
-      updateSVGHeight();
-    });
+    buildSVG();
   });
 });
 
-// ══════════════════════════════════════════════════════════════
-// DETAIL PANEL
-// ══════════════════════════════════════════════════════════════
-function openDetail(commit) {
-  selectedHash = commit.hash;
-  const color = getBranchColor(commit.branch);
-
-  document.getElementById("dp-hash").textContent = `commit ${commit.hash}`;
-  document.getElementById("dp-msg").textContent = commit.message;
+// ── DETAIL PANEL ──
+function openDetail(c) {
+  selectedHash = c.hash;
+  const color = branchColor(c.branch);
+  document.getElementById("dp-hash").textContent = "commit " + c.hash;
+  document.getElementById("dp-msg").textContent  = c.message;
+  document.getElementById("dp-desc").textContent = c.description;
 
   const meta = document.getElementById("dp-meta");
-  meta.innerHTML = `
-    <span class="branch-label" style="color:${color};border:1px solid ${color}44;background:${color}15">${commit.branch}</span>
-    <span class="detail-date">📅 ${commit.date}</span>`;
+  meta.innerHTML = "";
 
-  commit.tags.forEach(tag => {
+  const bp = document.createElement("span");
+  bp.className = "cr-branch-pill";
+  bp.textContent = c.branch;
+  bp.style.color = color;
+  bp.style.borderColor = color + "55";
+  bp.style.background  = color + "18";
+  meta.appendChild(bp);
+
+  const dateEl = document.createElement("span");
+  dateEl.className = "dp-date";
+  dateEl.textContent = "📅 " + c.date;
+  meta.appendChild(dateEl);
+
+  c.tags.forEach(function(tag) {
     const tb = document.createElement("span");
-    tb.className = "tag-badge" + (commit.type === "tag-release" ? " release" : "");
-    tb.textContent = (commit.type === "tag-release" ? "★ " : "◆ ") + tag;
+    tb.className = "cr-tag" + (c.type === "tag-release" ? " release" : "");
+    tb.textContent = (c.type === "tag-release" ? "★ " : "◆ ") + tag;
     meta.appendChild(tb);
   });
 
-  document.getElementById("dp-desc").textContent = commit.description;
-
-  const tagsEl = document.getElementById("dp-tags");
-  tagsEl.innerHTML = commit.type === "fail"
-    ? `<span style="color:var(--dans);font-size:12px">✗ Dit commit is gemarkeerd als een mislukking / leerpunt.</span>`
-    : commit.type === "merge"
-    ? `<span style="color:var(--work);font-size:12px">⊕ Merge commit — meerdere trajecten samengekomen.</span>`
+  const footer = document.getElementById("dp-footer");
+  footer.innerHTML = c.type === "fail"
+    ? "<span class='dp-badge fail'>&#10007; Mislukking / leerpunt</span>"
+    : c.type === "merge"
+    ? "<span class='dp-badge merge'>&#8853; Merge commit</span>"
     : "";
 
   document.getElementById("detail-panel").classList.add("open");
-  document.getElementById("overlay").classList.add("visible");
+  document.getElementById("overlay").classList.add("on");
 
-  // Highlight the row
-  document.querySelectorAll(".commit-row").forEach(r => r.style.background = "");
-  const activeRow = document.querySelector(`.commit-row[data-hash="${commit.hash}"]`);
-  if (activeRow) activeRow.style.background = `${color}10`;
+  document.querySelectorAll(".commit-row").forEach(function(r) { r.classList.remove("highlighted"); });
+  var activeRow = document.querySelector(".commit-row[data-hash='" + c.hash + "']");
+  if (activeRow) activeRow.classList.add("highlighted");
 }
-
-document.getElementById("detail-close").addEventListener("click", closeDetail);
-document.getElementById("overlay").addEventListener("click", closeDetail);
 
 function closeDetail() {
-  document.getElementById("detail-panel").classList.remove("open");
-  document.getElementById("overlay").classList.remove("visible");
-  document.querySelectorAll(".commit-row").forEach(r => r.style.background = "");
   selectedHash = null;
+  document.getElementById("detail-panel").classList.remove("open");
+  document.getElementById("overlay").classList.remove("on");
+  document.querySelectorAll(".commit-row").forEach(function(r) { r.classList.remove("highlighted"); });
 }
+document.getElementById("dp-close").addEventListener("click", closeDetail);
+document.getElementById("overlay").addEventListener("click", closeDetail);
 
-// ══════════════════════════════════════════════════════════════
-// TOOLTIP
-// ══════════════════════════════════════════════════════════════
+// ── TOOLTIP ──
 const tooltip = document.getElementById("tooltip");
-
-function showTooltip(e, commit) {
-  document.getElementById("tt-hash").textContent = commit.hash;
-  document.getElementById("tt-msg").textContent = commit.message;
-  tooltip.classList.add("visible");
-  moveTooltip(e);
+function showTooltip(e, c) {
+  document.getElementById("tt-hash").textContent = c.hash;
+  document.getElementById("tt-msg").textContent  = c.message;
+  tooltip.classList.add("on");
+  posTooltip(e);
+}
+function moveTooltip(e) { posTooltip(e); }
+function hideTooltip()  { tooltip.classList.remove("on"); }
+function posTooltip(e) {
+  tooltip.style.left = Math.min(e.clientX + 18, window.innerWidth  - 320) + "px";
+  tooltip.style.top  = Math.min(e.clientY + 18, window.innerHeight - 80)  + "px";
 }
 
-function moveTooltip(e) {
-  const x = e.clientX + 16;
-  const y = e.clientY + 16;
-  tooltip.style.left = Math.min(x, window.innerWidth - 300) + "px";
-  tooltip.style.top = Math.min(y, window.innerHeight - 80) + "px";
-}
-
-function hideTooltip() {
-  tooltip.classList.remove("visible");
-}
-
-// ══════════════════════════════════════════════════════════════
-// README TOGGLE
-// ══════════════════════════════════════════════════════════════
-document.getElementById("readme-header").addEventListener("click", () => {
-  const body = document.getElementById("readme-body");
-  const header = document.getElementById("readme-header");
-  body.classList.toggle("hidden");
-  header.classList.toggle("collapsed");
+// ── README TOGGLE ──
+document.getElementById("readme-header").addEventListener("click", function() {
+  document.getElementById("readme-body").classList.toggle("hidden");
+  document.getElementById("readme-header").classList.toggle("collapsed");
 });
 
-// ══════════════════════════════════════════════════════════════
-// TIMELINE SCRUBBER
-// ══════════════════════════════════════════════════════════════
-const years = [2020, 2021, 2022, 2023, 2024, 2025, 2026];
-const scrubber = document.getElementById("timeline-scrubber");
+// ── SCROLL ──
+window.addEventListener("scroll", updateScrubber, { passive: true });
 
-years.forEach(year => {
-  const el = document.createElement("div");
-  el.className = "timeline-year";
-  el.dataset.year = year;
-  el.innerHTML = `<span>${year}</span><div class="tl-dot"></div>`;
-  el.addEventListener("click", () => scrollToYear(year));
-  scrubber.appendChild(el);
-});
-
-function scrollToYear(year) {
-  const target = document.querySelector(`.commit-row[data-year="${year}"]`);
-  if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
-}
-
-function updateActiveYear() {
-  const viewCenter = window.scrollY + window.innerHeight / 2;
-  let closestYear = 2020;
-  let closestDist = Infinity;
-
-  document.querySelectorAll(".commit-row:not(.hidden-branch)").forEach(row => {
-    const rowCenter = row.offsetTop + row.offsetHeight / 2;
-    const dist = Math.abs(rowCenter - viewCenter);
-    if (dist < closestDist) {
-      closestDist = dist;
-      closestYear = parseInt(row.dataset.year);
-    }
-  });
-
-  document.querySelectorAll(".timeline-year").forEach(el => {
-    el.classList.toggle("active", parseInt(el.dataset.year) === closestYear);
-  });
-}
-
-// ══════════════════════════════════════════════════════════════
-// SCROLL ANIMATIONS
-// ══════════════════════════════════════════════════════════════
-function setupScrollAnimations() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-      }
-    });
-  }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
-
-  document.querySelectorAll(".commit-row").forEach(row => {
-    observer.observe(row);
-  });
-}
-
-// ══════════════════════════════════════════════════════════════
-// SVG HEIGHT FIX
-// ══════════════════════════════════════════════════════════════
-function updateSVGHeight() {
-  const container = document.getElementById("commits-container");
-  const svg = document.getElementById("graph-svg");
-  svg.setAttribute("height", container.offsetHeight);
-  drawSVGLines();
-}
-
-// ══════════════════════════════════════════════════════════════
-// SCROLL LISTENER
-// ══════════════════════════════════════════════════════════════
-window.addEventListener("scroll", () => {
-  updateActiveYear();
-}, { passive: true });
-
-// ══════════════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════════════
-buildCommitRows();
-
-window.addEventListener("load", () => {
-  updateSVGHeight();
-  updateActiveYear();
-});
-
-window.addEventListener("resize", () => {
-  updateSVGHeight();
-});
-
-// Re-draw after fonts/images settle
-setTimeout(() => {
-  updateSVGHeight();
-}, 500);
+// ── INIT ──
+buildRows();
+updateScrubber();
 </script>
 </body>
 </html>
